@@ -11,6 +11,6 @@ namespace TurnUpPortal.Tests
     [TestFixture]
     public class Employee_Tests : CommonDriver
     {
-        [Test]
+       
     }
 }

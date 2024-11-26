@@ -1,4 +1,5 @@
-﻿using OpenQA.Selenium;
+﻿using NUnit.Framework;
+using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using SeleniumExtras.WaitHelpers;
 using System;
@@ -18,13 +19,20 @@ namespace TurnUpPortal.Pages
             driver.Navigate().GoToUrl("http://horse.industryconnect.io/");
             driver.Manage().Window.Maximize();
 
+            try
+            {
+                //identify username textbox and enter valid username 
+                IWebElement usernameTextbox = driver.FindElement(By.Id("UserName"));
+                usernameTextbox.SendKeys("hari");
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail("Username Textbox not found");
+            }
 
-            //identify username textbox and enter valid username 
-            IWebElement usernameTextbox = driver.FindElement(By.Id("UserName"));
-            usernameTextbox.SendKeys("hari");
             //Implicit wait
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(5));
-            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(By.Id("UserName"));
+          //  WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(5));
+          //  var webElement = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(By.Id("UserName"));
 
             //identify password textbox and enter valid password 
             IWebElement passwordTextbox = driver.FindElement(By.Id("Password"));
