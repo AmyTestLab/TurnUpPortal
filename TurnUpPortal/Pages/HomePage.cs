@@ -1,4 +1,5 @@
-﻿using OpenQA.Selenium;
+﻿using NUnit.Framework;
+using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,7 @@ namespace TurnUpPortal.Pages
             //navigate to time and material module
             IWebElement administrationTab = driver.FindElement(By.XPath("/html/body/div[3]/div/div/ul/li[5]/a/span"));
             administrationTab.Click();
-           // Utilities.Wait.WaitToBeClickable(driver, "XPath", "/html/body/div[3]/div/div/ul/li[5]/ul/li[3]/a");
+            // Utilities.Wait.WaitToBeClickable(driver, "XPath", "/html/body/div[3]/div/div/ul/li[5]/ul/li[3]/a");
 
             IWebElement timeAndMaterialOption = driver.FindElement(By.XPath("/html/body/div[3]/div/div/ul/li[5]/ul/li[3]/a"));
             timeAndMaterialOption.Click();
@@ -24,13 +25,37 @@ namespace TurnUpPortal.Pages
 
             if (helloHari.Text == "Hello hari!")
             {
-                Console.WriteLine("USER HAS LOGGED IN SUCCESSFULLY. TEST PASSED");
+                Assert.Pass("USER HAS LOGGED IN SUCCESSFULLY. TEST PASSED");
             }
             else
             {
-                Console.WriteLine("USER HAS NOT LOGGED IN SUCCESSFULLY.TEST FAILED");
+                Assert.Fail("USER HAS NOT LOGGED IN SUCCESSFULLY.TEST FAILED");
             }
         }
-        
+
+        public void navigatetoEmployeePage(IWebDriver driver)
+        {
+            //navigate to Employee module
+            IWebElement administrationTab = driver.FindElement(By.XPath("/html/body/div[3]/div/div/ul/li[5]/a/span"));
+            administrationTab.Click();
+            // Utilities.Wait.WaitToBeClickable(driver, "XPath", "/html/body/div[3]/div/div/ul/li[5]/ul/li[3]/a");
+
+            IWebElement employeeOption = driver.FindElement(By.XPath("/html/body/div[3]/div/div/ul/li[5]/ul/li[2]/a"));
+            employeeOption.Click();
+
+            //check if employee detais has logged in successfully
+            IWebElement helloHari = driver.FindElement(By.XPath("//*[@id=\"logoutForm\"]/ul/li/a"));
+
+            if (helloHari.Text == "Hello hari!")
+            {
+                Assert.Pass("Employee details added successfully. TEST PASSED");
+            }
+            else
+            {
+                Assert.Fail("Employee details has not added successfully.TEST FAILED");
+            }
+
+        }
+
     }
 }

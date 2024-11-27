@@ -17,7 +17,7 @@ namespace TurnUpPortal.Pages
 {
     public class TMPage
     {
-         
+
         public void createTimeRecord(IWebDriver driver)
         {
             try
@@ -27,10 +27,10 @@ namespace TurnUpPortal.Pages
                 IWebElement createNewButton = driver.FindElement(By.XPath("//*[@id=\"container\"]/p/a"));
                 createNewButton.Click();
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 Assert.Fail("Create new button hasn't been found");
-             }
+            }
             //select time from drop down
             IWebElement typeCodeDropdown = driver.FindElement(By.XPath("//*[@id=\"TimeMaterialEditForm\"]/div/div[1]/div/span[1]/span/span[2]/span"));
             typeCodeDropdown.Click();
@@ -71,11 +71,11 @@ namespace TurnUpPortal.Pages
             }
             else
             {
-               Assert.Fail("NEW TIME RECORD HAS NOT BEEN CREATED.");
+                Assert.Fail("NEW TIME RECORD HAS NOT BEEN CREATED.");
             }
 
         }
-        public void editTimeRecord(IWebDriver driver) 
+        public void editTimeRecord(IWebDriver driver)
         {
             Thread.Sleep(4000);
             //Select a record and click edit button
