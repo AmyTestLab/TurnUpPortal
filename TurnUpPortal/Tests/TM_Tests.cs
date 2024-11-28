@@ -1,25 +1,23 @@
 ﻿using NUnit.Framework;
 using OpenQA.Selenium.Chrome;
-using OpenQA.Selenium;
+using TurnUpPortal.Pages;
+using TurnUpPortal.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
-using TurnUpPortal.Pages;
-using TurnUpPortal.Utilities;
 
 namespace TurnUpPortal.Tests
 {
     [TestFixture]
-    public class TM_Tests: CommonDriver
+    public class TM_Tests : CommonDriver
     {
         [SetUp]
         public void SetUpSteps()
         {
             //open chrome browser
-            driver = new ChromeDriver(); 
+            driver = new ChromeDriver();
 
             //Login page object initialisation and definition
             LoginPage loginPageObj = new LoginPage();
@@ -34,7 +32,7 @@ namespace TurnUpPortal.Tests
         {
             //TM page object initialisation and definition
             TMPage tMPageObj = new TMPage();
-            tMPageObj.createTimeRecord(driver);
+            tMPageObj.CreateTimeRecord(driver);
         }
         [Test]
         public void EditTime_Test()
@@ -42,7 +40,8 @@ namespace TurnUpPortal.Tests
             // Edit Time Record
 
             TMPage tMPageObj = new TMPage();
-            tMPageObj.editTimeRecord(driver);
+            tMPageObj.EditTimeRecord(driver, "New Code", "Updated description");
+            // tMPageObj.EditTimeRecord(driver);
         }
         [Test]
         public void DeleteTime_Test()
@@ -50,13 +49,13 @@ namespace TurnUpPortal.Tests
             // Delete Time Record
 
             TMPage tMPageObj = new TMPage();
-            tMPageObj.deleteTimeRecord(driver);
+            tMPageObj.DeleteTimeRecord(driver);
         }
         [TearDown]
         public void CloseTestRun()
-        {
-            driver.Quit();
-        }
-        
+         {
+           driver.Quit();
+         }
+
     }
 }

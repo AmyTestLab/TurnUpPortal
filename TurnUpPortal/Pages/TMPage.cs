@@ -1,148 +1,162 @@
-﻿using OpenQA.Selenium;
+﻿using NUnit.Framework;
+using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
-using NUnit.Framework;
 using TurnUpPortal.Utilities;
-
-
-
-
-
+using OpenQA.Selenium.Support.UI;
 
 namespace TurnUpPortal.Pages
 {
     public class TMPage
     {
-
-        public void createTimeRecord(IWebDriver driver)
+        private IWebElement WaitForElementToBeClickable(IWebDriver driver, By locator, int timeoutInSeconds = 10)
+        {
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(timeoutInSeconds));
+            return wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(locator));
+        }
+        public void CreateTimeRecord(IWebDriver driver)
         {
             try
             {
-                //create a time and material record
-                //click on create new button
-                IWebElement createNewButton = driver.FindElement(By.XPath("//*[@id=\"container\"]/p/a"));
+                // Click "Create New" button
+                IWebElement createNewButton = WaitForElementToBeClickable(driver, By.XPath("//*[@id=\"container\"]/p/a"));
+                //IWebElement createNewButton = driver.FindElement(By.XPath("//*[@id=\"container\"]/p/a"));
                 createNewButton.Click();
             }
             catch (Exception ex)
             {
-                Assert.Fail("Create new button hasn't been found");
+                Assert.Fail("Create New button hasn't been found." + ex.Message);
             }
-            //select time from drop down
-            IWebElement typeCodeDropdown = driver.FindElement(By.XPath("//*[@id=\"TimeMaterialEditForm\"]/div/div[1]/div/span[1]/span/span[2]/span"));
+
+            // Select Time from dropdown
+            IWebElement typeCodeDropdown = WaitForElementToBeClickable(driver, By.XPath("//*[@id=\"TimeMaterialEditForm\"]/div/div[1]/div/span[1]/span/span[2]/span"));
             typeCodeDropdown.Click();
 
-            Thread.Sleep(2000);
-            IWebElement timeOption = driver.FindElement(By.XPath("//*[@id=\"TypeCode_listbox\"]/li[2]"));
+            IWebElement timeOption = WaitForElementToBeClickable(driver, By.XPath("//*[@id=\"TypeCode_listbox\"]/li[2]"));
             timeOption.Click();
 
-            //type code into code textbox
-            IWebElement codeTextbox = driver.FindElement(By.Id("Code"));
+
+
+
+            // Type code into Code textbox
+            IWebElement codeTextbox = WaitForElementToBeClickable(driver, By.Id("Code"));
             codeTextbox.SendKeys("TA Programme");
 
-            //type description into description textbox
-
-            IWebElement descriptionTextbox = driver.FindElement(By.Id("Description"));
+            // Type description into Description textbox
+            IWebElement descriptionTextbox = WaitForElementToBeClickable(driver, By.Id("Description"));
             descriptionTextbox.SendKeys("This is a description");
 
-            //type price  into price textbox
+            // Type price into Price textbox
             IWebElement priceTagOverlap = driver.FindElement(By.XPath("//*[@id=\"TimeMaterialEditForm\"]/div/div[4]/div/span[1]/span/input[1]"));
             priceTagOverlap.Click();
 
-
-            IWebElement priceTextbox = driver.FindElement(By.Id("Price"));
+            IWebElement priceTextbox = WaitForElementToBeClickable(driver, By.Id("Price"));
             priceTextbox.SendKeys("12");
 
-            //click on save button
-            IWebElement saveButton = driver.FindElement(By.Id("SaveButton"));
+            // Click Save button
+            IWebElement saveButton = WaitForElementToBeClickable(driver, By.Id("SaveButton"));
             saveButton.Click();
-            Thread.Sleep(3000);
 
-            //check if  time record has been created successfully
-            IWebElement goToLastPageButton = driver.FindElement(By.XPath("//*[@id=\"tmsGrid\"]/div[4]/a[4]/span"));
+            // Wait for record creation and go to last page
+            IWebElement goToLastPageButton = WaitForElementToBeClickable(driver, By.XPath("//*[@id=\"tmsGrid\"]/div[4]/a[4]/span"));
             goToLastPageButton.Click();
-            IWebElement newCode = driver.FindElement(By.XPath("//*[@id=\"tmsGrid\"]/div[3]/table/tbody/tr[last()]/td[1]"));
-            if (newCode.Text == "TA Programme")
-            {
-                Assert.Pass("TIME RECORD CREATED.");
-            }
-            else
-            {
-                Assert.Fail("NEW TIME RECORD HAS NOT BEEN CREATED.");
-            }
-
         }
-        public void editTimeRecord(IWebDriver driver)
+
+        // Helper method to get text of the last created record
+        public string GetCode(IWebDriver driver)
         {
-            Thread.Sleep(4000);
-            //Select a record and click edit button
-            IWebElement lastPageButton = driver.FindElement(By.XPath("//*[@id=\"tmsGrid\"]/div[4]/a[4]/span"));
+            IWebElement newCode = WaitForElementToBeClickable(driver, By.XPath("//*[@id=\"tmsGrid\"]/div[3]/table/tbody/tr[last()]/td[1]"));
+            return newCode.Text;
+        }
+
+        public string GetDescription(IWebDriver driver)
+        {
+            IWebElement newDescription = WaitForElementToBeClickable(driver, By.XPath("//*[@id=\"tmsGrid\"]/div[3]/table/tbody/tr[last()]/td[3]"));
+            return newDescription.Text;
+        }
+
+        public string GetPrice(IWebDriver driver)
+        {
+            IWebElement newPrice = WaitForElementToBeClickable(driver, By.XPath("//*[@id=\"tmsGrid\"]/div[3]/table/tbody/tr[last()]/td[4]"));
+            return newPrice.Text;
+        }
+
+        // Edit time record
+        public void EditTimeRecord(IWebDriver driver, string code, string description)
+        {
+            // Go to the last page
+            IWebElement lastPageButton = WaitForElementToBeClickable(driver, By.XPath("//*[@id=\"tmsGrid\"]/div[4]/a[4]/span"));
             lastPageButton.Click();
-            Thread.Sleep(2000);
 
-
-            IWebElement editButton = driver.FindElement(By.XPath("//*[@id=\"tmsGrid\"]/div[3]/table/tbody/tr[last()]/td[5]/a[1]"));
+            // Wait for the edit button and click it
+            IWebElement editButton = WaitForElementToBeClickable(driver, By.XPath("//*[@id=\"tmsGrid\"]/div[3]/table/tbody/tr[last()]/td[5]/a[1]"));
             editButton.Click();
 
-            IWebElement codeTextbox = driver.FindElement(By.Id("Code"));
+            // Update the code and description
+            IWebElement codeTextbox = WaitForElementToBeClickable(driver, By.Id("Code"));
             codeTextbox.Clear();
-            codeTextbox.SendKeys("code");
-            Thread.Sleep(2000);
+            codeTextbox.SendKeys(code);
 
-            IWebElement descriptionTextbox = driver.FindElement(By.Id("Description"));
+            IWebElement descriptionTextbox = WaitForElementToBeClickable(driver, By.Id("Description"));
             descriptionTextbox.Clear();
-            descriptionTextbox.SendKeys("description");
-            Thread.Sleep(2000);
+            descriptionTextbox.SendKeys(description);
 
-
-            //Click save
-            IWebElement saveButton = driver.FindElement(By.Id("SaveButton"));
+            // Click Save
+            IWebElement saveButton = WaitForElementToBeClickable(driver, By.Id("SaveButton"));
             saveButton.Click();
-            Thread.Sleep(1500);
 
-            IWebElement llastPageButton = driver.FindElement(By.XPath("//*[@id=\"tmsGrid\"]/div[4]/a[4]/span"));
-            llastPageButton.Click();
-            Thread.Sleep(1500);
-
-
-            Thread.Sleep(1500);
+            // Go to the last page again
+            lastPageButton = WaitForElementToBeClickable(driver, By.XPath("//*[@id=\"tmsGrid\"]/div[4]/a[4]/span"));
+            lastPageButton.Click();
         }
-        public void deleteTimeRecord(IWebDriver driver)
+
+        // Get edited code
+        public string GetEditedCode(IWebDriver driver)
         {
-            Thread.Sleep(4000); Thread.Sleep(2000);
-            IWebElement llastPageButton = driver.FindElement(By.XPath("//*[@id=\"tmsGrid\"]/div[4]/a[4]/span"));
-            llastPageButton.Click();
-            Thread.Sleep(3000);
+            IWebElement editedCode = WaitForElementToBeClickable(driver, By.XPath("//*[@id=\"tmsGrid\"]/div[3]/table/tbody/tr[last()]/td[1]"));
+            return editedCode.Text;
+        }
 
-            IWebElement deleteButton = driver.FindElement(By.XPath("//*[@id=\"tmsGrid\"]/div[3]/table/tbody/tr[last()]/td[5]/a[2]"));
-            deleteButton.Click();
+        // Get edited description
+        public string GetEditedDescription(IWebDriver driver)
+        {
+            IWebElement editedDescription = WaitForElementToBeClickable(driver, By.XPath("//*[@id=\"tmsGrid\"]/div[3]/table/tbody/tr[last()]/td[3]"));
+            return editedDescription.Text;
+        }
 
-            Thread.Sleep(1500);
-
-            //Click OK to delete
-            driver.SwitchTo().Alert().Accept();
-
-            Thread.Sleep(3000);
-
-            driver.Navigate().Refresh();
-
-            Thread.Sleep(4000);
-            //Check if the record is deleted
-            IWebElement lastPageButton = driver.FindElement(By.XPath("//*[@id=\"tmsGrid\"]/div[4]/a[4]/span"));
+        // Delete time record
+        public void DeleteTimeRecord(IWebDriver driver)
+        {
+            IWebElement lastPageButton = WaitForElementToBeClickable(driver, By.XPath("//*[@id=\"tmsGrid\"]/div[4]/a[4]/span"));
             lastPageButton.Click();
 
-            IWebElement deletedCode = driver.FindElement(By.XPath("//*[@id=\"tmsGrid\"]/div[3]/table/tbody/tr[last()]/td[1]"));
+            // Click on delete button
+            IWebElement deleteButton = WaitForElementToBeClickable(driver, By.XPath("//*[@id=\"tmsGrid\"]/div[3]/table/tbody/tr[last()]/td[5]/a[2]"));
+            deleteButton.Click();
 
+            // Accept delete confirmation
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+            IAlert alert = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.AlertIsPresent());
+            alert.Accept();
+
+            // Wait for deletion to reflect
+            driver.Navigate().Refresh();
+            lastPageButton = WaitForElementToBeClickable(driver, By.XPath("//*[@id=\"tmsGrid\"]/div[4]/a[4]/span"));
+            lastPageButton.Click();
+
+            IWebElement deletedCode = WaitForElementToBeClickable(driver, By.XPath("//*[@id=\"tmsGrid\"]/div[3]/table/tbody/tr[last()]/td[1]"));
+
+            // Verify deletion
             if (deletedCode.Text != "Edit Code TA Programme")
             {
                 Assert.Pass("Record deleted successfully");
             }
             else
             {
-                Assert.Fail("Record has not been delete.");
+                Assert.Fail("Record has not been deleted.");
             }
         }
     }

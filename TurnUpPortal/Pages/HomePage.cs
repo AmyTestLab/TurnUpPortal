@@ -1,5 +1,7 @@
 ﻿using NUnit.Framework;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Support.UI;
+using TurnUpPortal.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,50 +14,67 @@ namespace TurnUpPortal.Pages
     {
         public void navigatetoTMPage(IWebDriver driver)
         {
-            //navigate to time and material module
-            IWebElement administrationTab = driver.FindElement(By.XPath("/html/body/div[3]/div/div/ul/li[5]/a/span"));
-            administrationTab.Click();
-            // Utilities.Wait.WaitToBeClickable(driver, "XPath", "/html/body/div[3]/div/div/ul/li[5]/ul/li[3]/a");
-
-            IWebElement timeAndMaterialOption = driver.FindElement(By.XPath("/html/body/div[3]/div/div/ul/li[5]/ul/li[3]/a"));
-            timeAndMaterialOption.Click();
-
-            //check if user has logged in successfully
-            IWebElement helloHari = driver.FindElement(By.XPath("//*[@id=\"logoutForm\"]/ul/li/a"));
-
-            if (helloHari.Text == "Hello hari!")
+            try
             {
-                Assert.Pass("USER HAS LOGGED IN SUCCESSFULLY. TEST PASSED");
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+
+                // Navigate to Time and Material module
+                IWebElement administrationTab = driver.FindElement(By.XPath("/html/body/div[3]/div/div/ul/li[5]/a/span"));
+                administrationTab.Click();
+
+
+                IWebElement timeAndMaterialOption = driver.FindElement(By.XPath("/html/body/div[3]/div/div/ul/li[5]/ul/li[3]/a"));
+                timeAndMaterialOption.Click();
+
+                // Verify successful login
+                VerifySuccessfulLogin(driver);
             }
-            else
+            catch (Exception ex)
             {
-                Assert.Fail("USER HAS NOT LOGGED IN SUCCESSFULLY.TEST FAILED");
+                Assert.Fail("Error occurred while navigating to TM page: " + ex.Message);
             }
+
         }
 
         public void navigatetoEmployeePage(IWebDriver driver)
         {
-            //navigate to Employee module
-            IWebElement administrationTab = driver.FindElement(By.XPath("/html/body/div[3]/div/div/ul/li[5]/a/span"));
-            administrationTab.Click();
-            // Utilities.Wait.WaitToBeClickable(driver, "XPath", "/html/body/div[3]/div/div/ul/li[5]/ul/li[3]/a");
-
-            IWebElement employeeOption = driver.FindElement(By.XPath("/html/body/div[3]/div/div/ul/li[5]/ul/li[2]/a"));
-            employeeOption.Click();
-
-            //check if employee detais has logged in successfully
-            IWebElement helloHari = driver.FindElement(By.XPath("//*[@id=\"logoutForm\"]/ul/li/a"));
-
-            if (helloHari.Text == "Hello hari!")
+            try
             {
-                Assert.Pass("Employee details added successfully. TEST PASSED");
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));  // Increase the timeout duration
+
+                // Navigate to Employee module
+                IWebElement administrationTab = driver.FindElement(By.XPath("/html/body/div[3]/div/div/ul/li[5]/a/span"));
+                administrationTab.Click();
+
+
+                IWebElement employeeOption = driver.FindElement(By.XPath("/html/body/div[3]/div/div/ul/li[5]/ul/li[2]/a"));
+                employeeOption.Click();
+
+                // Wait for a specific element that indicates the page has loaded (e.g., employee list or table)
+                // IWebElement employeeTable = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(By.XPath("//table[@id='employeeGrid']"))); // Example XPath
+
+                // Verify successful login
+                VerifySuccessfulLogin(driver);
             }
-            else
+            catch (Exception ex)
             {
-                Assert.Fail("Employee details has not added successfully.TEST FAILED");
+                Assert.Fail("Error occurred while navigating to Employee page: " + ex.Message);
             }
 
         }
+        private void VerifySuccessfulLogin(IWebDriver driver)
+        {
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(5));
+            IWebElement helloHari = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(By.XPath("//*[@id=\"logoutForm\"]/ul/li/a")));
+        
+            // Use Assert.IsTrue instead of Assert.Pass
+            Assert.That(helloHari.Text == "Hello hari!", "USER HAS NOT LOGGED IN SUCCESSFULLY. TEST FAILED");
+        }
 
+        //  internal void NavigatetoEmployeePage(IWebDriver driver)
+        // {
+        //     throw new NotImplementedException();
+        // }
     }
+
 }
