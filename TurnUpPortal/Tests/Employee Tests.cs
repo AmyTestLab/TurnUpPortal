@@ -13,6 +13,7 @@ namespace TurnUpPortal.Tests
     [TestFixture]
     public class Employee_Tests : CommonDriver
     {
+        private EmployeePage employeePageObj;
 
         [SetUp]
         public void SetUpSteps()
@@ -49,10 +50,10 @@ namespace TurnUpPortal.Tests
             EmployeePage employeePageObj = new EmployeePage();
             employeePageObj.DeleteEmployeeRecord(driver);
         }
-        [TearDown]
-        public void CloseTestRun()
-        {
-            driver.Quit();
-        }
+        // [TearDown]
+        //   public void CloseTestRun()
+        // {
+        //     driver.Quit();
+        //}
     }
 }
